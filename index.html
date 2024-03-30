@@ -83,49 +83,28 @@
                 <div class="col-lg-6 col-12 mb-3">
                     <div class="card">
                         <div class="card-header d-flex align-items-center justify-content-between">
-                            <h6 class="m-0">Number of Water Sources per District</h6>
+                            <h6 class="m-0">Number of students succeeded Or failed Per Father Education</h6>
                         </div>
                         <div class="card-body">
-                            <div id="interactiveBar"></div>
+                            <div id="interactiveBar_F"></div>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-6 col-12 mb-3">
                     <div class="card">
                         <div class="card-header d-flex align-items-center justify-content-between">
-                            <h6 class="m-0">Spatial Distribution of Water Quality</h6>
-                            <div class="form-inline">
-                                <label for="parameter-select">Parameter</label>
-                                <select value="total_hardness" id="parameter-select"  class="form-control-sm ml-2">
-                                    <option value="ecoli">ecoli</option>
-                                    <option value="ph">ph</option>
-                                    <option value="electrical_conductivity">electrical_conductivity</option>
-                                    <option value="turbidity">turbidity</option>
-                                    <option value="color_apparent">color_apparent</option>
-                                    <option value="total_dissolved_salts">total_dissolved_salts</option>
-                                    <option value="total_alkalinity">total_alkalinity</option>
-                                    <option value="bicarbonates">bicarbonates</option>
-                                    <option value="total_hardness">total_hardness</option>
-                                    <option value="CalciumHardardness">Calcium Hardardness</option>
-                                    <option value="magnesium_hardness">magnesium_hardness</option>
-                                    <option value="fluoride">fluoride</option>
-                                    <option value="chloride">chloride</option>
-                                    <option value="sulphate">sulphate</option>
-                                    <option value="nitrites">nitrites</option>
-                                    <option value="nitrates_n">nitrates_n</option>
-                                    <option value="ammonium_n">ammonium_n</option>
-                                    <option value="phosphates_p">phosphates_p</option>
-                                </select>
-                            </div>
+                            <h6 class="m-0">Number of students succeeded Or failed Per Mother Education</h6>
                         </div>
                         <div class="card-body">
-                            <div id="map"></div>
+                            <div id="interactiveBar_M"></div>
                         </div>
                     </div>
                 </div>
+
+
                 <div class="col-lg-6 col-12 mb-3">
                     <div class="card">
-                        <div class="card-header">Distribution of Water Sources in the Data</div>
+                        <div class="card-header">Number of succeeded students per gender</div>
                         <div class="card-body">
                             <div id="chart-container"></div>
                         </div>
@@ -185,7 +164,11 @@
     <script src="heatmap.js"></script>
     <script src="bubble.js"></script>
     <script src="main.js"></script>
-    <script src="interactive.js"></script>
+    <script src="interactive_fedu.js"></script>
+    <script src="interactive_medu.js"></script>
+
+
+
    
 </body>
 </html>
