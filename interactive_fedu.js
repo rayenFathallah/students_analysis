@@ -62,23 +62,6 @@ function updateChart(column) {
   const yAxis = d3.axisLeft(yScale);
 
   // Add x-axis to the bar chart
-
-  svg.append('text')
-  .attr('x', width / 2)
-  .attr('y', height + margin.bottom / 2 + 20)
-  .attr('text-anchor', 'middle')
-  .style('font-size', '12px')
-  .text('Fedu Level');
-
-  // Add y-axis indicator
-svg.append('text')
-.attr('transform', 'rotate(-90)')
-.attr('x', -height / 2)
-.attr('y', -margin.left / 2 - 20)
-.attr('text-anchor', 'middle')
-.style('font-size', '12px')
-.text('Number of students');
-
   svg.append('g')
     .attr('transform', `translate(0,${height})`)
     .call(xAxis)
@@ -108,7 +91,22 @@ svg.append('text')
     .attr('height', 0)
     .attr('fill', colorSucceed)
     .attr('rx', 6)
-    .attr('ry', 6);
+    .attr('ry', 6)
+    .on('mouseover', function (event, d) {
+      // Show tooltip on hover
+      d3.select(this).attr('fill', 'orange');
+      tooltip.style('opacity', 1).html(`Fedu Level: ${d} <br> Succeed: ${FeduCountsSucceed[d]}`);
+    })
+    .on('mousemove', function (event) {
+      // Move tooltip with mouse
+      tooltip.style('left', (event.pageX + 10) + 'px')
+        .style('top', (event.pageY - 15) + 'px');
+    })
+    .on('mouseout', function () {
+      // Hide tooltip on mouseout
+      d3.select(this).attr('fill', colorSucceed);
+      tooltip.style('opacity', 0);
+    });
 
   // Add animation to the succeed bars
   barsSucceed.transition()
@@ -116,10 +114,6 @@ svg.append('text')
     .delay((d, i) => i * 50)
     .attr('y', d => yScale(FeduCountsSucceed[d]))
     .attr('height', d => height - yScale(FeduCountsSucceed[d]));
-
-  // Add tooltips to the succeed bars
-  barsSucceed.append('title')
-    .text(d => `Succeed: ${FeduCountsSucceed[d]}`);
 
   // Create bars for the 'success = 0' data
   const barsFail = svg.selectAll('.bar-fail_F')
@@ -133,7 +127,22 @@ svg.append('text')
     .attr('height', 0)
     .attr('fill', colorFail)
     .attr('rx', 6)
-    .attr('ry', 6);
+    .attr('ry', 6)
+    .on('mouseover', function (event, d) {
+      // Show tooltip on hover
+      d3.select(this).attr('fill', 'orange');
+      tooltip.style('opacity', 1).html(`Fedu Level: ${d} <br> Fail: ${FeduCountsFail[d]}`);
+    })
+    .on('mousemove', function (event) {
+      // Move tooltip with mouse
+      tooltip.style('left', (event.pageX + 10) + 'px')
+        .style('top', (event.pageY - 15) + 'px');
+    })
+    .on('mouseout', function () {
+      // Hide tooltip on mouseout
+      d3.select(this).attr('fill', colorFail);
+      tooltip.style('opacity', 0);
+    });
 
   // Add animation to the fail bars
   barsFail.transition()
@@ -142,67 +151,15 @@ svg.append('text')
     .attr('y', d => yScale(FeduCountsFail[d]))
     .attr('height', d => height - yScale(FeduCountsFail[d]));
 
-  // Add tooltips to the fail bars
-  barsFail.append('title')
-    .text(d => `Fail: ${FeduCountsFail[d]}`);
-
-  // Add value labels on top of the bars
-  const labelsSucceed = svg.selectAll('.value-label-succeed_F')
-    .data(Fedus)
-    .enter()
-    .append('text')
-    .attr('class', 'value-label-succeed_F')
-    .attr('x', d => xScale(d) + xScale.bandwidth() / 4)
-    .attr('y', d => yScale(FeduCountsSucceed[d]) - 5)
-    .attr('text-anchor', 'middle')
-    .text(d => FeduCountsSucceed[d])
-    .style('font-size', '12px')
-    .style('font-weight', 'bold')
-    .style('fill', 'white');
-
-  const labelsFail = svg.selectAll('.value-label-fail_F')
-    .data(Fedus)
-    .enter()
-    .append('text')
-    .attr('class', 'value-label-fail_F')
-    .attr('x', d => xScale(d) + 3 * xScale.bandwidth() / 4)
-    .attr('y', d => yScale(FeduCountsFail[d]) - 5)
-    .attr('text-anchor', 'middle')
-    .text(d => FeduCountsFail[d])
-    .style('font-size', '12px')
-    .style('font-weight', 'bold')
-    .style('fill', 'white');
-
-  // Add legend
-  const legend = svg.append('g')
-    .attr('class', 'legend_F')
-    .attr('transform', `translate(${width - 100}, 30)`);
-
-  legend.append('rect')
-    .attr('x', 0)
-    .attr('y', 0)
-    .attr('width', 20)
-    .attr('height', 20)
-    .attr('fill', colorSucceed);
-
-  legend.append('text')
-    .attr('x', 30)
-    .attr('y', 12)
-    .text('Success = 1')
-    .style('font-size', '12px');
-
-  legend.append('rect')
-    .attr('x', 0)
-    .attr('y', 30)
-    .attr('width', 20)
-    .attr('height', 20)
-    .attr('fill', colorFail);
-
-  legend.append('text')
-    .attr('x', 30)
-    .attr('y', 42)
-    .text('Success = 0')
-    .style('font-size', '12px');
-  legend.attr('transform', `translate(${width - 100}, 1à)`);
-
+  // Add tooltips
+  const tooltip = d3.select('body')
+    .append('div')
+    .attr('class', 'tooltip')
+    .style('position', 'absolute')
+    .style('background-color', 'white')
+    .style('padding', '5px')
+    .style('border', '1px solid #ddd')
+    .style('border-radius', '5px')
+    .style('pointer-events', 'none')
+    .style('opacity', 0);
 }

@@ -1,4 +1,5 @@
-function initializeBarChart(initialColumn,svgId,xLabel,yLabel) {
+// Function to initialize and render the bar chart
+function initializeBarChart(initialColumn, svgId, xLabel, yLabel) {
     d3.csv('data/processed_file.csv')
         .then(data => {
             // Save the data to a global variable
@@ -12,9 +13,6 @@ function initializeBarChart(initialColumn,svgId,xLabel,yLabel) {
         });
 }
 
-
-
-
 // Function to update the bar chart based on the selected column
 function CreateBarChart(column, svgId, xLabel, yLabel) {
     // Remove the previous bar chart, if exists
@@ -27,9 +25,6 @@ function CreateBarChart(column, svgId, xLabel, yLabel) {
     renderChart(column, counts, svgId, xLabel, yLabel);
 }
 
-
-
-
 // Function to process data for a specific column
 function processData(column) {
     const countsSucceed = {};
@@ -39,17 +34,14 @@ function processData(column) {
         const value = row[column];
         const success = row.success === 'succeed' ? 1 : 0;
         if (success) {
-        countsSucceed[value] = (countsSucceed[value] || 0) + 1;
+            countsSucceed[value] = (countsSucceed[value] || 0) + 1;
         } else {
-        countsFail[value] = (countsFail[value] || 0) + 1;
+            countsFail[value] = (countsFail[value] || 0) + 1;
         }
     });
 
     return { countsSucceed, countsFail };
 }
-
-
-
 
 // Function to render the bar chart
 function renderChart(column, counts, svgId, xLabel, yLabel) {
@@ -112,7 +104,22 @@ function renderChart(column, counts, svgId, xLabel, yLabel) {
         .attr('y', d => yScale(countsSucceed[d]))
         .attr('width', xScale.bandwidth() / 2)
         .attr('height', d => height - yScale(countsSucceed[d]))
-        .attr('fill', colorSucceed);
+        .attr('fill', colorSucceed)
+        .on('mouseover', function(event, d) {
+            // Change color and show tooltip on hover
+            d3.select(this).attr('fill', 'orange');
+            tooltip.style('opacity', 1).html(`${xLabel}: ${d} <br> Succeed: ${countsSucceed[d]}`);
+        })
+        .on('mousemove', function(event) {
+            // Move tooltip with mouse
+            tooltip.style('left', (event.pageX + 10) + 'px')
+                .style('top', (event.pageY - 15) + 'px');
+        })
+        .on('mouseout', function() {
+            // Restore color and hide tooltip on mouseout
+            d3.select(this).attr('fill', colorSucceed);
+            tooltip.style('opacity', 0);
+        });
 
     // Create bars for the 'success = 0' data
     const barsFail = svg.selectAll('.bar-fail')
@@ -124,7 +131,22 @@ function renderChart(column, counts, svgId, xLabel, yLabel) {
         .attr('y', d => yScale(countsFail[d]))
         .attr('width', xScale.bandwidth() / 2)
         .attr('height', d => height - yScale(countsFail[d]))
-        .attr('fill', colorFail);
+        .attr('fill', colorFail)
+        .on('mouseover', function(event, d) {
+            // Change color and show tooltip on hover
+            d3.select(this).attr('fill', 'orange');
+            tooltip.style('opacity', 1).html(`${xLabel}: ${d} <br> Fail: ${countsFail[d]}`);
+        })
+        .on('mousemove', function(event) {
+            // Move tooltip with mouse
+            tooltip.style('left', (event.pageX + 10) + 'px')
+                .style('top', (event.pageY - 15) + 'px');
+        })
+        .on('mouseout', function() {
+            // Restore color and hide tooltip on mouseout
+            d3.select(this).attr('fill', colorFail);
+            tooltip.style('opacity', 0);
+        });
 
     // Add legend
     const legend = svg.append('g')
@@ -173,16 +195,24 @@ function renderChart(column, counts, svgId, xLabel, yLabel) {
         .attr('text-anchor', 'middle')
         .style('font-size', '12px')
         .text(yLabel);
+
+    // Add tooltips
+    const tooltip = d3.select('body')
+        .append('div')
+        .attr('class', 'tooltip')
+        .style('position', 'absolute')
+        .style('background-color', 'white')
+        .style('padding', '5px')
+        .style('border', '1px solid #ddd')
+        .style('border-radius', '5px')
+        .style('pointer-events', 'none')
+        .style('opacity', 0);
 }
 
-// initializeBarChart('Fedu', '#interactiveBar_F', 'Fedu Level', 'Number of students');
-// initializeBarChart('Medu', '#interactiveBar_M', 'Medu Level', 'Number of students');
-
+// Initialize and render bar charts
 initializeBarChart('famsize', '#famsizeBar', 'Family Size', 'Number of students');
 initializeBarChart('Pstatus', '#PstatusBar', 'Parent s Cohabitation Status', 'Number of students');
-
 initializeBarChart('Mjob', '#MjobBar', 'Mother s Job', 'Number of students');
 initializeBarChart('Fjob', '#FjobBar', 'Father s job', 'Number of students');
-
 initializeBarChart('famrel', '#famrelBar', 'Quality of Family Relationships', 'Number of students');
 initializeBarChart('famsup', '#famsupBar', 'Family Educational Support', 'Number of students');
